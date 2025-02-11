@@ -4,21 +4,28 @@
   "description": "API for managing corporate card transactions",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
-    "build": "tsc",
+    "start": "next start",
+    "dev": "next dev",
+    "build": "next build",
     "test": "jest",
     "migrate": "node-pg-migrate",
+    "lint": "next lint",
     "seed": "ts-node src/infrastructure/database/seeds/initialData.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
     "corporate-card-transactions": "file:",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "pg": "^8.7.1",
+    "next": "^15.1.7",
+    "node-pg-migrate": "^7.9.1",
+    "pg": "^8.13.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {
