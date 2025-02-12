@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 import { Transaction } from '../../domain/entities/Transaction';
-import { TransactionRepository } from '../../domain/repositories/TransactionRepository';
+import { TransactionRepository } from '../repositories/TransactionRepository';
 
 export class PostgresTransactionRepository implements TransactionRepository {
   constructor(private pool: Pool) {}

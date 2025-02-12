@@ -1,5 +1,5 @@
 import type { Request, Response } from "express"
-import type { CardRepository } from "../../../domain/repositories/CardRepository"
+import type { CardRepository } from "../../repositories/CardRepository"
  
 export class CardController {
   constructor(private cardRepository: CardRepository) {}

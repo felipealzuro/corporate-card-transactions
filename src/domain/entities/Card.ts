@@ -1,13 +1,6 @@
-// src/domain/entities/Card.ts
-import type { CardRepository } from "../repositories/CardRepository"
-
 export interface Card {
-  id: string;
-  number: string;
-  // Add other card properties
+  id: string
+  // Add other card properties here
 }
 
-export class CardController {
-  constructor(private cardRepository: CardRepository) {}
-  // Add controller methods
-}
+

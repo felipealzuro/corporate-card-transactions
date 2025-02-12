@@ -1,12 +1,14 @@
-import express from 'express';
-import { TransactionController } from '../controllers/TransactionController';
+import { Router } from "express"
+import type { TransactionController } from "../controllers/TransactionController"
 
-export function transactionRoutes(transactionController: TransactionController) {
-  const router = express.Router();
+export function setupTransactionRoutes(transactionController: TransactionController) {
+  const router = Router()
 
-  router.post('/', (req, res) => transactionController.createTransaction(req, res));
+  router.post("/", transactionController.createTransaction.bind(transactionController))
+  router.get("/", transactionController.getTransactions.bind(transactionController))
+  router.patch("/:id/status", transactionController.updateTransactionStatus.bind(transactionController))
+  router.get("/summary", transactionController.getExpenseSummary.bind(transactionController))
 
-  // Implement other routes...
-
-  return router;
+  return router
 }
+

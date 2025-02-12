@@ -1,4 +1,4 @@
-import type { Transaction, TransactionStatus } from "../entities/Transaction"
+import type { Transaction, TransactionStatus } from "../domain/entities/Transaction"
 
 export interface TransactionRepository {
   create(transaction: Omit<Transaction, "id">): Promise<Transaction>
