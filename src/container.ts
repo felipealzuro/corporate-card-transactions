@@ -1,7 +1,7 @@
 import { Container } from "inversify"
 import { TransactionRepository } from "./domain/repositories/TransactionRepository"
 import { CategoryRepository } from "./domain/repositories/CategoryRepository"
-import { PostgresTransactionRepository } from "./infrastructure/repositories/PostgresTransactionRepository"
+import { PostgresTransactionRepository } from "./infrastructure/database/PostgresTransactionRepository"
 import { PostgresCategoryRepository } from "./infrastructure/repositories/PostgresCategoryRepository"
 import { CreateTransactionUseCase } from "./domain/usecases/CreateTransactionUseCase"
 import { GetTransactionsUseCase } from "./domain/usecases/GetTransactionsUseCase"

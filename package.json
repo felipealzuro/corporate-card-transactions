@@ -21,6 +21,7 @@
     "corporate-card-transactions": "file:",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "inversify": "^6.2.2",
     "next": "^15.1.7",
     "node-pg-migrate": "^7.9.1",
     "pg": "^8.13.1",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
+    "@types/inversify": "^2.0.32",
     "@types/jest": "^27.0.2",
     "@types/node": "^16.11.6",
     "@types/pg": "^8.6.1",
