@@ -1,43 +1,22 @@
-import express from 'express';
-import { Pool } from 'pg';
-import { PostgresTransactionRepository } from './infrastructure/database/PostgresTransactionRepository';
-import { CreateTransactionUseCase } from './domain/usecases/CreateTransactionUseCase';
-import { TransactionController } from './infrastructure/web/controllers/TransactionController';
-import { transactionRoutes } from './infrastructure/web/routes/transactionRoutes';
-import { errorHandler } from "./infrastructure/web/middleware/errorHandler";
-import { TransactionRepository } from "./infrastructure/repositories/TransactionRepository";
-import { CardRepository } from "./infrastructure/repositories/CardRepository";
+import "reflect-metadata"
+import { container } from "./container"
+import { TYPES } from "./domain/symbols"
+import type { TransactionController } from "./infrastructure/web/controllers/TransactionController"
+import express from "express"
 
+const app = express()
+const port = process.env.PORT || 3000
 
-const transactionRepository = new TransactionRepository();
-const cardRepository = new CardRepository();
+app.use(express.json())
 
-const createTransactionUseCase = new CreateTransactionUseCase(transactionRepository, cardRepository);
+const transactionController = container.get<TransactionController>(TYPES.TransactionController)
 
-const app = express();
-// ... other middleware and route setup ... 
-app.use(errorHandler);
- 
-// ... server startup ...
-app.use(express.json());
+app.post("/transactions", (req, res) => transactionController.createTransaction(req, res))
+app.get("/transactions", (req, res) => transactionController.getTransactions(req, res))
+app.patch("/transactions/:id/status", (req, res) => transactionController.updateTransactionStatus(req, res))
+app.get("/transactions/summary", (req, res) => transactionController.getExpenseSummary(req, res))
 
-const pool = new Pool({
-  // Configure your PostgreSQL connection here
-  user: 'your_username',
-  host: 'localhost',
-  database: 'your_database',
-  password: 'your_password',
-  port: 5432,
-});
-
-const transactionRepository = new PostgresTransactionRepository(pool);
-const createTransactionUseCase = new CreateTransactionUseCase(transactionRepository);
-const transactionController = new TransactionController(createTransactionUseCase);
-
-app.use('/transactions', transactionRoutes(transactionController));
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`)
+})
 

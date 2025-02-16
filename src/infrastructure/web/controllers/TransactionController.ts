@@ -1,17 +1,18 @@
 import type { Request, Response } from "express"
 import { inject, injectable } from "inversify"
-import { CreateTransactionUseCase } from "@/domain/usecases/CreateTransactionUseCase"
-import { GetTransactionsUseCase } from "@/domain/usecases/GetTransactionsUseCase"
-import { UpdateTransactionStatusUseCase } from "@/domain/usecases/UpdateTransactionStatusUseCase"
-import { GetExpenseSummaryUseCase } from "@/domain/usecases/GetExpenseSummaryUseCase"
+import { TYPES } from "../../../domain/symbols"
+import type { CreateTransactionUseCase } from "../../../domain/usecases/CreateTransactionUseCase"
+import type { GetTransactionsUseCase } from "../../../domain/usecases/GetTransactionsUseCase"
+import type { UpdateTransactionStatusUseCase } from "../../../domain/usecases/UpdateTransactionStatusUseCase"
+import type { GetExpenseSummaryUseCase } from "../../../domain/usecases/GetExpenseSummaryUseCase"
 
 @injectable()
 export class TransactionController {
   constructor(
-    @inject(CreateTransactionUseCase) private createTransactionUseCase: CreateTransactionUseCase,
-    @inject(GetTransactionsUseCase) private getTransactionsUseCase: GetTransactionsUseCase,
-    @inject(UpdateTransactionStatusUseCase) private updateTransactionStatusUseCase: UpdateTransactionStatusUseCase,
-    @inject(GetExpenseSummaryUseCase) private getExpenseSummaryUseCase: GetExpenseSummaryUseCase
+    @inject(TYPES.CreateTransactionUseCase) private createTransactionUseCase: CreateTransactionUseCase,
+    @inject(TYPES.GetTransactionsUseCase) private getTransactionsUseCase: GetTransactionsUseCase,
+    @inject(TYPES.UpdateTransactionStatusUseCase) private updateTransactionStatusUseCase: UpdateTransactionStatusUseCase,
+    @inject(TYPES.GetExpenseSummaryUseCase) private getExpenseSummaryUseCase: GetExpenseSummaryUseCase
   ) {}
 
   async createTransaction(req: Request, res: Response) {
@@ -52,4 +53,5 @@ export class TransactionController {
     }
   }
 }
+
 

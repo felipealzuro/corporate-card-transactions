@@ -1,20 +1,69 @@
-import type { Request, Response } from "express"
-import type { CardRepository } from "@/domain/repositories/CardRepository"
+import { injectable } from "inversify"
+import type { TransactionRepository } from "../../domain/repositories/TransactionRepository"
+import type { Transaction, TransactionStatus } from "../../domain/entities/Transaction"
+import { InjectRepository } from "@nestjs/typeorm"
+import type { Repository } from "typeorm"
+import { TransactionEntity } from "../database/entities/TransactionEntity"
 
-export class CardController {
-  constructor(private cardRepository: CardRepository) {}
+@injectable()
+export class PostgresTransactionRepository implements TransactionRepository {
+  constructor(
+    @InjectRepository(TransactionEntity)
+    private transactionRepository: Repository<TransactionEntity>
+  ) {}
 
-  async getCard(req: Request, res: Response) {
-    const cardId = req.params.id
-    const card = await this.cardRepository.getById(cardId)
-    if (card) {
-      res.json(card)
-    } else {
-      res.status(404).json({ message: "Card not found" })
-    }
+  async create(transaction: Omit<Transaction, "id">): Promise<Transaction> {
+    const newTransaction = this.transactionRepository.create(transaction)
+    await this.transactionRepository.save(newTransaction)
+    return newTransaction
   }
 
-  // Add other controller methods as needed
+  async findById(id: string): Promise<Transaction | null> {
+    return this.transactionRepository.findOne({ where: { id } })
+  }
+
+  async findAll(filters?: {
+    category?: string
+    startDate?: Date
+    endDate?: Date
+    status?: TransactionStatus
+  }): Promise<Transaction[]> {
+    const query = this.transactionRepository.createQueryBuilder("transaction")
+
+    if (filters?.category) {
+      query.andWhere("transaction.category.name = :category", { category: filters.category })
+    }
+
+    if (filters?.startDate) {
+      query.andWhere("transaction.date >= :startDate", { startDate: filters.startDate })
+    }
+
+    if (filters?.endDate) {
+      query.andWhere("transaction.date <= :endDate", { endDate: filters.endDate })
+    }
+
+    if (filters?.status) {
+      query.andWhere("transaction.status = :status", { status: filters.status })
+    }
+
+    return query.getMany()
+  }
+
+  async updateStatus(id: string, status: TransactionStatus): Promise<Transaction> {
+    await this.transactionRepository.update(id, { status })
+    return this.findById(id)
+  }
+
+  async getSummaryByCategory(): Promise<{ category: string; totalAmount: number }[]> {
+    return this.transactionRepository
+      .createQueryBuilder("transaction")
+      .select("category.name", "category")
+      .addSelect("SUM(transaction.amount)", "totalAmount")
+      .leftJoin("transaction.category", "category")
+      .groupBy("category.name")
+      .getRawMany()
+  }
 }
+
 
 

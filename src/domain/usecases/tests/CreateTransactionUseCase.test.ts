@@ -1,4 +1,4 @@
-import { describe } from "../__tests__/tests/CreateTransactionUseCase.test"
+import { describe } from "../__tests__/__tests__/CreateTransactionUseCase.test"
 
 describe("CreateTransactionUseCase", () => {
   // Implement your tests
