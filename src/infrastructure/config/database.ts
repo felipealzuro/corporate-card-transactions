@@ -1,14 +1,19 @@
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
+import dotenv from "dotenv"
+import { DataSource } from "typeorm"
 
-dotenv.config();
+dotenv.config()
 
-const pool = new Pool({
-  user: process.env.DB_USER,
+export const AppDataSource = new DataSource({
+  type: "postgres",
   host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
+  port: Number.parseInt(process.env.DB_PORT || "5432"),
+  username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  port: parseInt(process.env.DB_PORT || '5432'),
-});
+  database: process.env.DB_NAME,
+  synchronize: true,
+  logging: false,
+  entities: ["src/infrastructure/database/entities/**/*.ts"],
+  migrations: ["src/infrastructure/database/migrations/**/*.ts"],
+  subscribers: ["src/infrastructure/database/subscribers/**/*.ts"],
+})
 
-export default pool;

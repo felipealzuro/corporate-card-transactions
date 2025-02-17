@@ -9,20 +9,11 @@ import { GetTransactionsUseCase } from "./domain/usecases/GetTransactionsUseCase
 import { UpdateTransactionStatusUseCase } from "./domain/usecases/UpdateTransactionStatusUseCase"
 import { GetExpenseSummaryUseCase } from "./domain/usecases/GetExpenseSummaryUseCase"
 import { CreateCategoryUseCase } from "./domain/usecases/CreateCategoryUseCase"
-import { Pool } from "pg"
+import { TransactionController } from "./infrastructure/web/controllers/TransactionController"
+import { CategoryController } from "./infrastructure/web/controllers/CategoryController"
+import { AppDataSource } from "./infrastructure/config/database"
 
 const container = new Container()
-
-// Database
-container.bind<Pool>(TYPES.DbPool).toConstantValue(
-  new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: Number.parseInt(process.env.DB_PORT || "5432"),
-  }),
-)
 
 // Repositories
 container.bind<TransactionRepository>(TYPES.TransactionRepository).to(PostgresTransactionRepository)
@@ -35,6 +26,19 @@ container.bind<UpdateTransactionStatusUseCase>(TYPES.UpdateTransactionStatusUseC
 container.bind<GetExpenseSummaryUseCase>(TYPES.GetExpenseSummaryUseCase).to(GetExpenseSummaryUseCase)
 container.bind<CreateCategoryUseCase>(TYPES.CreateCategoryUseCase).to(CreateCategoryUseCase)
 
+// Controllers
+container.bind<TransactionController>(TYPES.TransactionController).to(TransactionController)
+container.bind<CategoryController>(TYPES.CategoryController).to(CategoryController)
+
+// TypeORM Repositories
+container.bind(TYPES.TransactionEntityRepository).toDynamicValue(() => {
+  return AppDataSource.getRepository("TransactionEntity")
+})
+container.bind(TYPES.CategoryEntityRepository).toDynamicValue(() => {
+  return AppDataSource.getRepository("CategoryEntity")
+})
+
 export { container }
+
 
 

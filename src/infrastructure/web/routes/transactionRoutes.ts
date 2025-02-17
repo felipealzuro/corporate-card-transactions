@@ -4,11 +4,16 @@ import type { TransactionController } from "../controllers/TransactionController
 export function setupTransactionRoutes(transactionController: TransactionController) {
   const router = Router()
 
-  router.post("/", transactionController.createTransaction.bind(transactionController))
-  router.get("/", transactionController.getTransactions.bind(transactionController))
-  router.patch("/:id/status", transactionController.updateTransactionStatus.bind(transactionController))
-  router.get("/summary", transactionController.getExpenseSummary.bind(transactionController))
+  router.post("/", (req, res) => transactionController.createTransaction(req, res))
+  router.get("/", (req, res) => transactionController.getTransactions(req, res))
+  router.patch("/:id/status", (req, res) => transactionController.updateTransactionStatus(req, res))
+  router.get("/summary", (req, res) => transactionController.getExpenseSummary(req, res))
 
   return router
 }
+
+
+
+
+
 

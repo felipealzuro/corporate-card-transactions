@@ -2,30 +2,30 @@
   "name": "corporate-card-transactions",
   "version": "1.0.0",
   "description": "Corporate card transaction management system",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "migrate": "ts-node src/infrastructure/database/runMigrations.ts",
-    "start": "node dist/index.js",
+    "start": "ts-node src/index.ts",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test": "vitest",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "corporate-card-transactions": "file:",
-    "express": "^4.17.1",
-    "inversify": "^6.0.1",
-    "pg": "^8.7.1",
-    "reflect-metadata": "^0.2.1"
+    "express": "^4.21.2",
+    "inversify": "^6.2.2",
+    "pg": "^8.13.3",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
-    "@types/express": "^4.17.13",
-    "@types/node": "^20.5.0",
-    "@types/pg": "^8.6.1",
-    "@vitest/ui": "^0.34.6",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.1.6",
-    "vitest": "^0.34.6"
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.4",
+    "@types/pg": "^8.11.11",
+    "@vitest/coverage-v8": "^3.0.5",
+    "@vitest/runner": "^3.0.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
   }
 }

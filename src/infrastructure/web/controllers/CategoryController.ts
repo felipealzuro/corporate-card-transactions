@@ -1,11 +1,12 @@
+import { injectable, inject } from "inversify"
 import type { Request, Response } from "express"
-import { inject, injectable } from "inversify"
-import { CreateCategoryUseCase } from "@/domain/usecases/CreateCategoryUseCase"
+import { TYPES } from "../../../domain/symbols"
+import type { CreateCategoryUseCase } from "../../../domain/usecases/CreateCategoryUseCase"
 
 @injectable()
 export class CategoryController {
   constructor(
-    @inject(CreateCategoryUseCase) private createCategoryUseCase: CreateCategoryUseCase
+    @inject(TYPES.CreateCategoryUseCase) private createCategoryUseCase: CreateCategoryUseCase
   ) {}
 
   async createCategory(req: Request, res: Response) {
@@ -17,4 +18,5 @@ export class CategoryController {
     }
   }
 }
+
 

@@ -1,5 +1,5 @@
+import { injectable, inject } from "inversify"
 import type { Request, Response } from "express"
-import { inject, injectable } from "inversify"
 import { TYPES } from "../../../domain/symbols"
 import type { CreateTransactionUseCase } from "../../../domain/usecases/CreateTransactionUseCase"
 import type { GetTransactionsUseCase } from "../../../domain/usecases/GetTransactionsUseCase"
@@ -44,14 +44,12 @@ export class TransactionController {
     }
   }
 
-  async getExpenseSummary(req: Request, res: Response) {
+  async getExpenseSummary(_req: Request, res: Response) {
     try {
       const summary = await this.getExpenseSummaryUseCase.execute()
       res.json(summary)
     } catch (error) {
       res.status(400).json({ error: (error as Error).message })
     }
-  }
+  } 
 }
-
-

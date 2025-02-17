@@ -1,25 +1,26 @@
-import { injectable } from "inversify"
+import { injectable, inject } from "inversify"
 import type { TransactionRepository } from "../../domain/repositories/TransactionRepository"
 import type { Transaction, TransactionStatus } from "../../domain/entities/Transaction"
-import { InjectRepository } from "@nestjs/typeorm"
 import type { Repository } from "typeorm"
 import { TransactionEntity } from "../database/entities/TransactionEntity"
+import { TYPES } from "../../domain/symbols"
 
 @injectable()
 export class PostgresTransactionRepository implements TransactionRepository {
   constructor(
-    @InjectRepository(TransactionEntity)
+    @inject(TYPES.TransactionEntityRepository)
     private transactionRepository: Repository<TransactionEntity>
   ) {}
 
   async create(transaction: Omit<Transaction, "id">): Promise<Transaction> {
     const newTransaction = this.transactionRepository.create(transaction)
     await this.transactionRepository.save(newTransaction)
-    return newTransaction
+    return this.mapToTransaction(newTransaction)
   }
 
   async findById(id: string): Promise<Transaction | null> {
-    return this.transactionRepository.findOne({ where: { id } })
+    const transaction = await this.transactionRepository.findOne({ where: { id } })
+    return transaction ? this.mapToTransaction(transaction) : null
   }
 
   async findAll(filters?: {
@@ -31,7 +32,7 @@ export class PostgresTransactionRepository implements TransactionRepository {
     const query = this.transactionRepository.createQueryBuilder("transaction")
 
     if (filters?.category) {
-      query.andWhere("transaction.category.name = :category", { category: filters.category })
+      query.andWhere("transaction.category = :category", { category: filters.category })
     }
 
     if (filters?.startDate) {
@@ -46,24 +47,41 @@ export class PostgresTransactionRepository implements TransactionRepository {
       query.andWhere("transaction.status = :status", { status: filters.status })
     }
 
-    return query.getMany()
+    const transactions = await query.getMany()
+    return transactions.map(t => this.mapToTransaction(t))
   }
 
   async updateStatus(id: string, status: TransactionStatus): Promise<Transaction> {
     await this.transactionRepository.update(id, { status })
-    return this.findById(id)
+    const transaction = await this.findById(id)
+    if (!transaction) {
+      throw new Error('Transaction not found')
+    }
+    return transaction
   }
 
   async getSummaryByCategory(): Promise<{ category: string; totalAmount: number }[]> {
     return this.transactionRepository
       .createQueryBuilder("transaction")
-      .select("category.name", "category")
+      .select("transaction.category", "category")
       .addSelect("SUM(transaction.amount)", "totalAmount")
-      .leftJoin("transaction.category", "category")
-      .groupBy("category.name")
+      .groupBy("transaction.category")
       .getRawMany()
   }
-}
 
+  private mapToTransaction(entity: TransactionEntity): Transaction {
+    return {
+      id: entity.id,
+      cardId: entity.cardId,
+      amount: entity.amount,
+      currency: entity.currency,
+      description: entity.description,
+      merchantName: entity.merchantName,
+      category: entity.category,
+      date: entity.date,
+      status: entity.status
+    }
+  }
+}
 
 

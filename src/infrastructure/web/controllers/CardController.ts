@@ -1,22 +1,19 @@
-import type { Request, Response } from "express"
-import type { CardRepository } from "../../repositories/CardRepository"
- 
+// src/infrastructure/web/controllers/CardController.ts
+import { Request, Response } from "express";
+import { CardRepository } from "@/domain/repositories/CardRepository";
+
 export class CardController {
   constructor(private cardRepository: CardRepository) {}
- 
-  async getCard(req: Request, res: Response): Promise<void> {
+
+  async getCard(req: Request, res: Response): Promise<Response> {
     try {
-      const { id } = req.params
-      const card = await this.cardRepository.findById(id)
-      if (card) {
-        res.json(card)
-      } else {
-        res.status(404).json({ error: "Card not found" })
+      const card = await this.cardRepository.getById(req.params.id);
+      if (!card) {
+        return res.status(404).json({ message: "Card not found" });
       }
+      return res.json(card);
     } catch (error) {
-      res.status(500).json({ error: "Internal server error" })
+      return res.status(500).json({ message: "Internal server error" });
     }
   }
- 
-  // Implement other methods...
 }

@@ -1,13 +1,18 @@
+// domain/entities/Transaction.ts
 export enum TransactionStatus {
-  Pending = "Pending",
-  Approved = "Approved",
-  Rejected = "Rejected",
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+  CANCELLED = "CANCELLED"
 }
 
 export interface Transaction {
   id: string
-  cardLastFourDigits: string
+  cardId: string
   amount: number
+  currency: string
+  description: string
+  merchantName: string
   category: string
   date: Date
   status: TransactionStatus

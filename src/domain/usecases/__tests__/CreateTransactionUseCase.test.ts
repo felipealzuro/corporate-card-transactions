@@ -5,18 +5,21 @@ import { type Transaction, TransactionStatus } from "../../entities/Transaction"
 
 describe("CreateTransactionUseCase", () => {
   it("should create a transaction", async () => {
-    const mockTransactionRepository:vi.Mocked<TransactionRepository> = {
+    const mockTransactionRepository: Vi.Mocked<TransactionRepository> = {
       create: vi.fn(),
     } as any
 
     const createTransactionUseCase = new CreateTransactionUseCase(mockTransactionRepository)
 
     const transactionData: Omit<Transaction, "id"> = {
-      cardLastFourDigits: "1234",
+      cardId: "1234",
       amount: 100,
       category: "Food",
       date: new Date(),
-      status: TransactionStatus.Pending,
+      status: TransactionStatus.PENDING,
+      currency: "",
+      description: "",
+      merchantName: ""
     }
 
     const createdTransaction: Transaction = {
@@ -33,4 +36,7 @@ describe("CreateTransactionUseCase", () => {
   })
 })
 
+
+
+export { describe }
 
